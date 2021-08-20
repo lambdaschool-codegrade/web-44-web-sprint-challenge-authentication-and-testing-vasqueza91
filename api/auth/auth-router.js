@@ -16,7 +16,15 @@ function buildToken(user) {
   return jwt.sign(payload, TOKEN_SECRET, options)
 }
 
-router.post('/register', checkAuthPayload, (req, res) => {
+function validateUser(req, res, next) {
+  if (!req.body.username || !req.body.username.trim() || !req.body.password || !req.body.name.password()) {
+    res.status(422).end()
+  } else {
+    next()
+  }
+}
+
+router.post('/register', checkAuthPayload, validateUser, (req, res, next) => {
   // res.end('implement login, please!');
 
   let user = req.body;
@@ -58,7 +66,7 @@ router.post('/register', checkAuthPayload, (req, res) => {
   */
 });
 
-router.post('/login', checkAuthPayload, (req, res) => {
+router.post('/login', checkAuthPayload, validateUser, (req, res, next) => {
   // res.end('implement login, please!');
   let { username, password } = req.body;
 

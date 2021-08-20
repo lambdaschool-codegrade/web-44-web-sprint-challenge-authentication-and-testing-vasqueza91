@@ -31,4 +31,43 @@ describe('server.js', () => {
       });
   });
 
+//register with valid payload
+describe("[POST] /api/auth/register", () => {
+
+  it('valid request returning status: 201', async () => {
+      await db('users').truncate()
+      const res = await request(server)
+      .post('/api/auth/register')
+      .send(testData);
+      expect(res.status).toBe(201)
+  });
+//register with invalid payload
+  it('invalid request returning status: 422', async () => {
+      const res = await request(server)
+      .post('/api/auth/register')
+      .send({});
+      expect(res.status).toBe(422);
+  });
+});
+
+//login user
+describe("[POST]/api/auth/login", ()=> {
+
+//valid payload
+  it('returns status: 500 when valid credentials are provided', async () => {
+      const res = await request(server)
+      .post('/api/auth/login')
+      .send(testData);
+      expect(res.status).toBe(500)
+  })
+
+//invalid payload
+  it('invalid payload with error message of : Invalid credentials', async () => {
+      const res = await request(server)
+      .post('/api/auth/login')
+      .send({ username: '', password: '' })
+      expect(res.status).toBe(422)
+  })
+});
+
 });
